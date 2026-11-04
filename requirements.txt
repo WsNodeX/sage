@@ -1,0 +1,2 @@
+# Sage ships with zero runtime dependencies.
+# The entire framework is built on the Python standard library only.
