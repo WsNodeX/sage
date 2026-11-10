@@ -98,19 +98,14 @@ graph LR
 ```
 
 A tool that raises does not kill the server, and it does not produce a protocol
-error either — the failure is reported the way MCP specifies, inside the result:
+error either — MCP puts the failure inside the result:
 
 ```json
-{"jsonrpc":"2.0","id":5,"result":{
-  "content":[{"type":"text","text":"error: kaboom"}],
-  "isError":true
-}}
+{"jsonrpc":"2.0","id":5,"result":{"content":[{"type":"text","text":"error: kaboom"}],"isError":true}}
 ```
 
-Protocol-level problems (unknown method, bad params) use the JSON-RPC `error` field
-with a numeric code. The distinction matters: a client should surface `isError` to
-the user as "the tool failed", but treat a JSON-RPC `error` as "my request was
-malformed".
+`isError` means "the tool failed"; the JSON-RPC `error` field with a numeric code is
+reserved for malformed requests. A client must surface them differently.
 
 ## Install
 
@@ -131,10 +126,8 @@ python -m pytest -q
 - **Input schemas come from type hints.** A parameter typed `Any` or a complex
   nested dict will produce a loose schema; pass `input_schema=` explicitly when the
   inferred one is wrong.
-- **No auth.** MCP over stdio inherits the parent process's permissions; there is no
-  token layer here.
-- **No benchmark numbers.** No throughput or latency measurements are published,
-  because none were measured.
+- **No auth.** MCP over stdio inherits the parent process's permissions.
+- **No benchmark numbers.** None were measured, so none are published.
 
 ## License
 
